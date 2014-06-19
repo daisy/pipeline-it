@@ -7,13 +7,14 @@ import javax.ws.rs.client.WebTarget;
 
 import org.daisy.pipeline.webservice.jabx.base.Alive;
 import org.daisy.pipeline.webservice.jabx.job.Jobs;
-/**Simple but full-featured pipline2 WS client
- *
+/**
+ * Simple but full-featured pipline2 WS client
  */
 public class PipelineClient {
         private static final HashMap<Class<?>,EndPoint> endPoints= new HashMap<Class<?>,EndPoint>();
         static{
                 endPoints.put(Alive.class,new EndPoint("alive",Alive.class));
+                endPoints.put(Jobs.class,new EndPoint("jobs",Jobs.class));
         }
 
 
