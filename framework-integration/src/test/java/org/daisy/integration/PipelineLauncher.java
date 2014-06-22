@@ -8,6 +8,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import org.daisy.pipeline.webservice.jabx.base.Alive;
+import org.glassfish.jersey.message.internal.NullOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,10 +52,13 @@ public class PipelineLauncher {
                 ProcessBuilder pb = new ProcessBuilder(
                                 new File(this.path, NIX_LAUNCHER).toString());
                 pb.environment().putAll(this.env);
-                //we inherit the redirections
-                //otherwise it wont start... go figure
-                //otherwise it won't start
-                pb.inheritIO();
+                //redirect to tmp files
+                File err=File.createTempFile("pipelineErr",".txt");
+                err.deleteOnExit();
+                File out=File.createTempFile("pipelineOut",".txt");
+                err.deleteOnExit();
+                pb.redirectError(err);
+                pb.redirectOutput(out);
                 //start the process
                 pb.start();
                 logger.info("The process has been launched "
@@ -65,8 +69,11 @@ public class PipelineLauncher {
                         //may cause the while run foreva
                         volatile boolean done = false;
 
+                        
                         public Boolean call() {
+                                int times=1;
                                 while (!done) {
+                                        logger.info(String.format("Waiting for the ws(%d)...",times++));
                                         Alive alive = null;
                                         try {
                                                 alive = client.Alive();
