@@ -9,6 +9,7 @@ import org.daisy.pipeline.webservice.jabx.request.Item;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.request.ObjectFactory;
 import org.daisy.pipeline.webservice.jabx.request.Script;
+import org.daisy.pipeline.webservice.jabx.request.Priority;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
 import org.junit.Assert;
 
@@ -16,9 +17,10 @@ import com.google.common.base.Optional;
 import com.google.common.io.Files;
 
 public class Utils {
-        public static String SCRIPT="dtbook-to-epub3";
-        public static String SOURCE="hauy_valid.xml";
-        public static String SAMPLES_PATH="/home/javi/daisy/pipeline-assembly/src/main/resources/samples/";
+        public final static String SCRIPT="dtbook-to-epub3";
+        public final static String SOURCE="hauy_valid.xml";
+        public final static String SAMPLES_PATH="/home/javi/daisy/pipeline-assembly/src/main/resources/samples/";
+        public final static String NICE_NAME="NICE_NAME";
 
         public static void startPipeline(PipelineClient client) throws IOException {
         
@@ -54,8 +56,12 @@ public class Utils {
                 Input input = reqFactory.createInput();
                 input.getItem().add(source);
                 input.setName("source");
-                req.getScriptOrNicenameOrInput().add(script);
-                req.getScriptOrNicenameOrInput().add(input);
+                //Nice name
+                req.getScriptOrNicenameOrPriority().add(script);
+                req.getScriptOrNicenameOrPriority()
+                        .add(NICE_NAME);
+                req.getScriptOrNicenameOrPriority().add(input);
+                req.getScriptOrNicenameOrPriority().add(Priority.fromValue("low"));
                 return Optional.of(req);
         }
 

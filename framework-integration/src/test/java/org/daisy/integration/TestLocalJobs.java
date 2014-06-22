@@ -6,6 +6,7 @@ import org.daisy.pipeline.webservice.jabx.base.Alive;
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
+import org.daisy.pipeline.webservice.jabx.request.Priority;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -47,10 +48,24 @@ public class TestLocalJobs {
         @Test
         public void testSendJob() throws Exception {
                 Optional<JobRequest> req = Utils.getJobRequest(getClient());
+                
                 Assert.assertTrue("Couldn't build the request",req.isPresent());
                 Job job=getClient().SendJob(req.get());
                 Assert.assertTrue("Job has been sent",job.getId()!=null &&job.getId().length()>0);
+                //So we don't over load the pipeline with different jobs
+                testStatus(job);
+
+        }
+
+        private void testStatus(Job in) throws Exception {
+                Job job = getClient().Job(in.getId());
+                ////Check the id
+                Assert.assertEquals("Ids are not equal",in.getId(),job.getId());
+                Assert.assertEquals("Nice name is set",Utils.NICE_NAME,job.getNicenameOrScriptOrMessages().get(0));
+                Assert.assertTrue("Status is set",job.getStatus().value().length()>0);
+                Assert.assertEquals("The priority is low","low",job.getPriority().toString().toLowerCase());
                 
+
         }
  
        

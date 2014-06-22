@@ -1,7 +1,5 @@
 package org.daisy.integration;
 
-import java.util.HashMap;
-
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -11,19 +9,10 @@ import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.job.Jobs;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.JAXBContext;
 /**
  * Simple but full-featured pipline2 WS client
  */
 public class PipelineClient {
-        private static final HashMap<String,EndPoint> endPoints= new HashMap<String,EndPoint>();
-        static{
-                endPoints.put("alive",new EndPoint("alive",Alive.class));
-                endPoints.put("jobs",new EndPoint("jobs",Jobs.class));
-                endPoints.put("halt",new EndPoint("halt",Void.class));
-        }
-
 
         private WebTarget target;
 
@@ -56,36 +45,12 @@ public class PipelineClient {
         public Job SendJob(JobRequest request) throws Exception{
                 return this.post("jobs",request,Job.class);
         }
+
+        public Job Job(String id) throws Exception{
+                return this.get(String.format("jobs/%s",id),Job.class);
+        }
         public void Halt(String key) {
                 this.get(String.format("admin/halt/%s",key),Void.class);
         }
 }
 
-class EndPoint{
-        String path;
-        Class<?> clazz;
-
-        /**
-         * @param path
-         * @param clazz
-         */
-        public EndPoint(String path, Class<?> clazz) {
-                this.path = path;
-                this.clazz = clazz;
-        }
-
-        /**
-         * @return the path
-         */
-        public String getPath() {
-                return path;
-        }
-
-        /**
-         * @return the clazz
-         */
-        public Class<?> getClazz() {
-                return clazz;
-        }
-
-}
