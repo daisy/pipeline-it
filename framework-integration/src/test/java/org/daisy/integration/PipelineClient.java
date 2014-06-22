@@ -7,14 +7,16 @@ import javax.ws.rs.client.WebTarget;
 
 import org.daisy.pipeline.webservice.jabx.base.Alive;
 import org.daisy.pipeline.webservice.jabx.job.Jobs;
+import org.daisy.pipeline.webservice.jabx.script.Scripts;
 /**
  * Simple but full-featured pipline2 WS client
  */
 public class PipelineClient {
-        private static final HashMap<Class<?>,EndPoint> endPoints= new HashMap<Class<?>,EndPoint>();
+        private static final HashMap<String,EndPoint> endPoints= new HashMap<String,EndPoint>();
         static{
-                endPoints.put(Alive.class,new EndPoint("alive",Alive.class));
-                endPoints.put(Jobs.class,new EndPoint("jobs",Jobs.class));
+                endPoints.put("alive",new EndPoint("alive",Alive.class));
+                endPoints.put("jobs",new EndPoint("jobs",Jobs.class));
+                endPoints.put("halt",new EndPoint("halt",Void.class));
         }
 
 
@@ -23,17 +25,25 @@ public class PipelineClient {
         public PipelineClient(String baseUri) {
                 this.target = ClientBuilder.newClient().target(baseUri);
         }
-        private <T> T get(Class<T> clazz) {
-                EndPoint entry=endPoints.get(clazz);
-                return target.path(entry.getPath()).request().get(clazz);
+        private <T> T get(String path,Class<T> result) {
+                
+                return target.path(path).request().get(result);
 
         }
 
         public Alive Alive() {
-                return this.get(Alive.class);
+                return this.get("alive",Alive.class);
         }
         public Jobs Jobs() {
-                return this.get(Jobs.class);
+                return this.get("jobs",Jobs.class);
+        }
+
+        public Scripts Scripts() {
+                return this.get("scripts",Scripts.class);
+                
+        }
+        public void Halt(String key) {
+                this.get(String.format("admin/halt/%s",key),Void.class);
         }
 }
 
