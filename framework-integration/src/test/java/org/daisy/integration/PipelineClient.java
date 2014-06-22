@@ -3,11 +3,16 @@ package org.daisy.integration;
 import java.util.HashMap;
 
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 
 import org.daisy.pipeline.webservice.jabx.base.Alive;
+import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.job.Jobs;
+import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.JAXBContext;
 /**
  * Simple but full-featured pipline2 WS client
  */
@@ -30,6 +35,11 @@ public class PipelineClient {
                 return target.path(path).request().get(result);
 
         }
+        private <T,U> U post(String path,T payload,Class<U> result) {
+                
+                return target.path(path).request().post(Entity.xml(payload),result);
+
+        }
 
         public Alive Alive() {
                 return this.get("alive",Alive.class);
@@ -41,6 +51,10 @@ public class PipelineClient {
         public Scripts Scripts() {
                 return this.get("scripts",Scripts.class);
                 
+        }
+
+        public Job SendJob(JobRequest request) throws Exception{
+                return this.post("jobs",request,Job.class);
         }
         public void Halt(String key) {
                 this.get(String.format("admin/halt/%s",key),Void.class);
