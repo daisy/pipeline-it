@@ -69,7 +69,9 @@
           <systemProperties>
             <property>
               <name>pipeline.path</name>
-              <value>${project.build.directory}/target/checkout/target/dev-launcher/bin/</value>
+              <!--<value>${project.build.directory}/target/checkout/target/dev-launcher/bin/</value>-->
+              <value>${project.build.directory}/../../../pipeline-assembly/target/dev-launcher/bin/</value><!-- this will change soon but just for speeding up the testing process -->
+
             </property>
           </systemProperties>
         </configuration>

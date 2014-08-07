@@ -2,6 +2,7 @@ package org.daisy.integration;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
 import org.daisy.pipeline.webservice.jabx.request.Input;
@@ -19,13 +20,12 @@ import com.google.common.io.Files;
 public class Utils {
         public final static String SCRIPT="dtbook-to-epub3";
         public final static String SOURCE="hauy_valid.xml";
-        public final static String SAMPLES_PATH="/home/javi/daisy/pipeline-assembly/src/main/resources/samples/";
         public final static String NICE_NAME="NICE_NAME";
 
         public static void startPipeline(PipelineClient client) throws IOException {
         
                 //Just for testing this will disappear soon
-                File path=new File("/home/javi/daisy/pipeline-assembly/target/dev-launcher/bin/");
+                File path=new File(System.getProperty("pipeline.path"));
                 boolean up=PipelineLauncher.newLauncher(path,client)
                         .setEnv("JAVA_OPTS","-Dgosh.args=--noi")
                         .launch();
@@ -38,12 +38,12 @@ public class Utils {
                 client.Halt(key);
         }
 
-        public static Optional<JobRequest> getJobRequest(PipelineClient client){
+        public static Optional<JobRequest> getJobRequest(PipelineClient client)
+                        throws URISyntaxException {
                 ObjectFactory reqFactory= new ObjectFactory();
                 JobRequest req=reqFactory.createJobRequest();
                 Script script=reqFactory.createScript();
-                File dtbook=new File(new File(SAMPLES_PATH),"dtbook");
-                File hauy=new File(dtbook,SOURCE);
+                File hauy=new File(Utils.class.getClassLoader().getResource("dtbook/hauy_valid.xml").toURI());
 
                 Optional<String> href=Utils.getScriptHref(SCRIPT,client);
                 if (!href.isPresent()){
