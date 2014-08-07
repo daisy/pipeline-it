@@ -5,14 +5,17 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
+import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.request.Input;
 import org.daisy.pipeline.webservice.jabx.request.Item;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.request.ObjectFactory;
-import org.daisy.pipeline.webservice.jabx.request.Script;
 import org.daisy.pipeline.webservice.jabx.request.Priority;
+import org.daisy.pipeline.webservice.jabx.request.Script;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 import com.google.common.io.Files;
@@ -21,6 +24,7 @@ public class Utils {
         public final static String SCRIPT="dtbook-to-epub3";
         public final static String SOURCE="hauy_valid.xml";
         public final static String NICE_NAME="NICE_NAME";
+        private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
         public static void startPipeline(PipelineClient client) throws IOException {
         
@@ -73,6 +77,30 @@ public class Utils {
                         }
                 }
                 return Optional.absent();
+        }
+
+        public static Job waitForStatusChange(String status, Job in, long timeout,
+                        PipelineClient client) throws Exception {
+                long waited=0L;
+                Job job=in;
+                logger.info(String.format("Waiting for status %s",status));
+                while(job.getStatus().value()!=status){
+                        job=client.Job(job.getId());
+                        try {
+                                Thread.sleep(500);                 
+                                waited+=500;
+                        } catch(InterruptedException ex) {
+                                    Thread.currentThread().interrupt();
+                        }
+                        if(waited>timeout){
+                                throw new RuntimeException("waitForStatusChange timed out");
+                        }
+                }
+
+                logger.info(String.format("After status %s",job.getStatus().value()));
+                return job;
+
+
         }
         
 }
