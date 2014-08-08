@@ -61,7 +61,7 @@ public class Utils {
         }
 
         public static Optional<String> getScriptHref(String name,PipelineClient client){
-                Scripts scripts=client.Scripts();
+                Scripts scripts=client.scripts();
                 for(org.daisy.pipeline.webservice.jabx.script.Script s : scripts.getScript()){
                         if (s.getId().equals(name)){
                                 return Optional.of(s.getHref());
@@ -76,7 +76,7 @@ public class Utils {
                 Job job=in;
                 logger.info(String.format("Waiting for status %s",status));
                 while(job.getStatus().value()!=status){
-                        job=client.Job(job.getId());
+                        job=client.job(job.getId());
                         try {
                                 Thread.sleep(500);                 
                                 waited+=500;

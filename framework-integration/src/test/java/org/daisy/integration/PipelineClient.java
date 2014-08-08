@@ -35,29 +35,29 @@ public class PipelineClient {
 
         }
 
-        public Alive Alive() {
+        public Alive alive() {
                 return this.get("alive",Alive.class);
         }
-        public Jobs Jobs() {
+        public Jobs jobs() {
                 return this.get("jobs",Jobs.class);
         }
 
-        public Scripts Scripts() {
+        public Scripts scripts() {
                 return this.get("scripts",Scripts.class);
                 
         }
 
-        public Job SendJob(JobRequest request) throws Exception{
+        public Job sendJob(JobRequest request) throws Exception{
                 return this.post("jobs",request,Job.class);
         }
 
-        public Job Job(String id) throws Exception{
+        public Job job(String id) throws Exception{
                 return this.get(String.format("jobs/%s",id),Job.class);
         }
-        public void Delete(String id) throws Exception{
+        public void delete(String id) throws Exception{
                 this.delete(String.format("jobs/%s",id),Void.class);
         }
-        public void Halt(String key) {
+        public void halt(String key) {
                 this.get(String.format("admin/halt/%s",key),Void.class);
         }
 

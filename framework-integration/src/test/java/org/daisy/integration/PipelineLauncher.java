@@ -79,7 +79,7 @@ public class PipelineLauncher {
                                         logger.info(String.format("Waiting for the ws(%d)...",times++));
                                         Alive alive = null;
                                         try {
-                                                alive = client.Alive();
+                                                alive = client.alive();
                                         } catch (Exception e) {}
 
                                         if (alive != null) {
@@ -112,7 +112,7 @@ public class PipelineLauncher {
         public void halt() throws IOException {
                 File keyFile=new File(new File(System.getProperty("java.io.tmpdir")),"dp2key.txt");
                 String key=Files.readFirstLine(keyFile,Charset.defaultCharset());
-                this.client.Halt(key);
+                this.client.halt(key);
         }
         //cleans all the db and data from the pipeline residing in the given path
         public void clean(){
