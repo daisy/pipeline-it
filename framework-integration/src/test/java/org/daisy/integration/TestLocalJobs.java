@@ -1,6 +1,8 @@
 package org.daisy.integration;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.daisy.pipeline.webservice.jabx.base.Alive;
 import org.daisy.pipeline.webservice.jabx.job.Job;
@@ -13,7 +15,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.io.Files;
 
 public class TestLocalJobs {
         private static final Logger logger = LoggerFactory.getLogger(TestLocalJobs.class);
@@ -34,7 +38,6 @@ public class TestLocalJobs {
         @AfterClass
         public static void bringDown() throws IOException {
                 LAUNCHER.halt();
-                
         }
 
         @Test
@@ -81,21 +84,21 @@ public class TestLocalJobs {
 
         }
 
-        @Test
-        public void testJobStatusCycle() throws Exception {
-                logger.info(String.format("%s testJobStatusCycle IN",TestLocalJobs.class));
-                Optional<JobRequest> req = Utils.getJobRequest(getClient());
-                //send two jobs
-                //TODO: Adjust the number of jobs via properties to be sure
-                getClient().SendJob(req.get());
-                Job job=getClient().SendJob(req.get());
-                Assert.assertEquals("The job status is IDLE",job.getStatus().value(),"IDLE");
-                job=Utils.waitForStatusChange("RUNNING",job,100000,getClient());
-                Assert.assertEquals("The job status is RUNNING",job.getStatus().value(),"RUNNING");
-                job=Utils.waitForStatusChange("DONE",job,100000,getClient());
-                Assert.assertEquals("The job status is DONE",job.getStatus().value(),"DONE");
-                logger.info(String.format("%s testJobStatusCycle OUT",TestLocalJobs.class));
-        }
+//        @Test
+        //public void testJobStatusCycle() throws Exception {
+                //logger.info(String.format("%s testJobStatusCycle IN",TestLocalJobs.class));
+                //Optional<JobRequest> req = Utils.getJobRequest(getClient());
+                ////send two jobs
+                ////TODO: Adjust the number of jobs via properties to be sure
+                //getClient().SendJob(req.get());
+                //Job job=getClient().SendJob(req.get());
+                //Assert.assertEquals("The job status is IDLE",job.getStatus().value(),"IDLE");
+                //job=Utils.waitForStatusChange("RUNNING",job,100000,getClient());
+                //Assert.assertEquals("The job status is RUNNING",job.getStatus().value(),"RUNNING");
+                //job=Utils.waitForStatusChange("DONE",job,100000,getClient());
+                //Assert.assertEquals("The job status is DONE",job.getStatus().value(),"DONE");
+                //logger.info(String.format("%s testJobStatusCycle OUT",TestLocalJobs.class));
+        //}
 
         @Test
         public void testAfterJob() throws Exception {
@@ -104,7 +107,8 @@ public class TestLocalJobs {
                 Job job=getClient().SendJob(req.get());
                 job=Utils.waitForStatusChange("DONE",job,100000,getClient());
                 //test results
-                //test log
+                //tet logs
+                checkLog(job);
                 //test delete
                 checkDelete(job);
                 logger.info(String.format("%s testAfterJob OUT",TestLocalJobs.class));
@@ -119,7 +123,15 @@ public class TestLocalJobs {
                 }catch(javax.ws.rs.NotFoundException nfe){
 
                 }
+                //TODO: check there is no data
 
+        }
+
+        private void checkLog(Job in) throws IOException {
+                String fromServer=getClient().log(in.getId());
+                File logFile=new File(Utils.logPath(in.getId()));
+                String fromFile=Files.toString(logFile,Charset.defaultCharset());
+                Assert.assertEquals("The log from the server and the file are equal",fromServer,fromFile);
         }
 
 

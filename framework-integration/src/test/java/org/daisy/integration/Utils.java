@@ -3,7 +3,6 @@ package org.daisy.integration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.request.Input;
@@ -13,10 +12,10 @@ import org.daisy.pipeline.webservice.jabx.request.ObjectFactory;
 import org.daisy.pipeline.webservice.jabx.request.Priority;
 import org.daisy.pipeline.webservice.jabx.request.Script;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 
 public class Utils {
@@ -32,9 +31,6 @@ public class Utils {
                 PipelineLauncher launcher=PipelineLauncher.newLauncher(path,client)
                         .setEnv("JAVA_OPTS","-Dgosh.args=--noi");
                 return launcher;
-        }
-
-        public static void stopPipeline(PipelineClient client) throws IOException {
         }
 
         public static Optional<JobRequest> getJobRequest(PipelineClient client)
@@ -96,6 +92,11 @@ public class Utils {
                 return job;
 
 
+        }
+        public static String logPath(String id){
+                String path[]=new String[]{System.getProperty("pipeline.path"),
+                        "data","jobs",id,id+".log"};
+                return Joiner.on(File.separator).join(path);
         }
         
 }

@@ -60,5 +60,9 @@ public class PipelineClient {
         public void Halt(String key) {
                 this.get(String.format("admin/halt/%s",key),Void.class);
         }
+
+        public String log(String id){
+                return this.get(String.format("jobs/%s/log",id),String.class);
+        }
 }
 
