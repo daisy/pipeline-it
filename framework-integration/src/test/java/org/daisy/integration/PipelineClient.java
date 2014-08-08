@@ -24,6 +24,11 @@ public class PipelineClient {
                 return target.path(path).request().get(result);
 
         }
+        private <T> T delete(String path,Class<T> result) {
+                
+                return target.path(path).request().delete(result);
+
+        }
         private <T,U> U post(String path,T payload,Class<U> result) {
                 
                 return target.path(path).request().post(Entity.xml(payload),result);
@@ -48,6 +53,9 @@ public class PipelineClient {
 
         public Job Job(String id) throws Exception{
                 return this.get(String.format("jobs/%s",id),Job.class);
+        }
+        public void Delete(String id) throws Exception{
+                this.delete(String.format("jobs/%s",id),Void.class);
         }
         public void Halt(String key) {
                 this.get(String.format("admin/halt/%s",key),Void.class);

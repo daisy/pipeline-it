@@ -65,6 +65,18 @@ public class TestLocalJobs {
                 logger.info(String.format("%s testSendJob OUT",TestLocalJobs.class));
 
         }
+
+        private void checkJobInfo(Job in) throws Exception {
+                Job job = getClient().Job(in.getId());
+                ////Check the id
+                Assert.assertEquals("Ids are not equal",in.getId(),job.getId());
+                Assert.assertEquals("Nice name is set",Utils.NICE_NAME,job.getNicenameOrScriptOrMessages().get(0));
+                Assert.assertTrue("Status is set",job.getStatus().value().length()>0);
+                Assert.assertEquals("The priority is low","low",job.getPriority().toString().toLowerCase());
+                
+
+        }
+
         @Test
         public void testJobStatusCycle() throws Exception {
                 logger.info(String.format("%s testJobStatusCycle IN",TestLocalJobs.class));
@@ -81,16 +93,32 @@ public class TestLocalJobs {
                 logger.info(String.format("%s testJobStatusCycle OUT",TestLocalJobs.class));
         }
 
-        private void checkJobInfo(Job in) throws Exception {
-                Job job = getClient().Job(in.getId());
-                ////Check the id
-                Assert.assertEquals("Ids are not equal",in.getId(),job.getId());
-                Assert.assertEquals("Nice name is set",Utils.NICE_NAME,job.getNicenameOrScriptOrMessages().get(0));
-                Assert.assertTrue("Status is set",job.getStatus().value().length()>0);
-                Assert.assertEquals("The priority is low","low",job.getPriority().toString().toLowerCase());
-                
+        @Test
+        public void testAfterJob() throws Exception {
+                logger.info(String.format("%s testAfterJob IN",TestLocalJobs.class));
+                Optional<JobRequest> req = Utils.getJobRequest(getClient());
+                Job job=getClient().SendJob(req.get());
+                job=Utils.waitForStatusChange("DONE",job,100000,getClient());
+                //test results
+                //test log
+                //test delete
+                checkDelete(job);
+                logger.info(String.format("%s testAfterJob OUT",TestLocalJobs.class));
+        }
+
+        private void checkDelete(Job in) throws Exception {
+                PipelineClient client=getClient();
+                client.Delete(in.getId());
+                try{
+                        client.Job(in.getId());
+                        Assert.fail("The job shouldn't be here");
+                }catch(javax.ws.rs.NotFoundException nfe){
+
+                }
 
         }
+
+
  
        
 }
