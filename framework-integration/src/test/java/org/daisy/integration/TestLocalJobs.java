@@ -2,10 +2,13 @@ package org.daisy.integration;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import org.daisy.pipeline.webservice.jabx.base.Alive;
 import org.daisy.pipeline.webservice.jabx.job.Job;
+import org.daisy.pipeline.webservice.jabx.job.Result;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
 import org.junit.AfterClass;
@@ -15,7 +18,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.io.Files;
 
@@ -59,20 +61,19 @@ public class TestLocalJobs {
                 logger.info(String.format("%s testScripts OUT",TestLocalJobs.class));
         }
 
-        //@Test
-        //public void testSendJob() throws Exception {
-                //logger.info(String.format("%s testSendJob IN",TestLocalJobs.class));
-                //Optional<JobRequest> req = Utils.getJobRequest(getClient());
+        @Test
+        public void testSendJob() throws Exception {
+                logger.info(String.format("%s testSendJob IN",TestLocalJobs.class));
+                Optional<JobRequest> req = Utils.getJobRequest(getClient());
                 
-                //Assert.assertTrue("Couldn't build the request",req.isPresent());
-                //Job job=getClient().SendJob(req.get());
-                //Assert.assertTrue("Job has been sent",job.getId()!=null &&job.getId().length()>0);
-                ////So we don't over load the pipeline with different jobs
-                //checkJobInfo(job);
-                //Utils.waitForStatusChange("DONE",job,100000,getClient());
-                //logger.info(String.format("%s testSendJob OUT",TestLocalJobs.class));
+                Assert.assertTrue("Couldn't build the request",req.isPresent());
+                Job job=getClient().SendJob(req.get());
+                Assert.assertTrue("Job has been sent",job.getId()!=null &&job.getId().length()>0);
+                //So we don't over load the pipeline with different jobs
+                checkJobInfo(job);
+                logger.info(String.format("%s testSendJob OUT",TestLocalJobs.class));
 
-        //}
+        }
 
         private void checkJobInfo(Job in) throws Exception {
                 Job job = getClient().Job(in.getId());
@@ -85,21 +86,21 @@ public class TestLocalJobs {
 
         }
 
-//        @Test
-        //public void testJobStatusCycle() throws Exception {
-                //logger.info(String.format("%s testJobStatusCycle IN",TestLocalJobs.class));
-                //Optional<JobRequest> req = Utils.getJobRequest(getClient());
-                ////send two jobs
-                ////TODO: Adjust the number of jobs via properties to be sure
-                //getClient().SendJob(req.get());
-                //Job job=getClient().SendJob(req.get());
-                //Assert.assertEquals("The job status is IDLE",job.getStatus().value(),"IDLE");
-                //job=Utils.waitForStatusChange("RUNNING",job,100000,getClient());
-                //Assert.assertEquals("The job status is RUNNING",job.getStatus().value(),"RUNNING");
-                //job=Utils.waitForStatusChange("DONE",job,100000,getClient());
-                //Assert.assertEquals("The job status is DONE",job.getStatus().value(),"DONE");
-                //logger.info(String.format("%s testJobStatusCycle OUT",TestLocalJobs.class));
-        //}
+        @Test
+        public void testJobStatusCycle() throws Exception {
+                logger.info(String.format("%s testJobStatusCycle IN",TestLocalJobs.class));
+                Optional<JobRequest> req = Utils.getJobRequest(getClient());
+                //send two jobs
+                //TODO: Adjust the number of jobs via properties to be sure
+                getClient().SendJob(req.get());
+                Job job=getClient().SendJob(req.get());
+                Assert.assertEquals("The job status is IDLE",job.getStatus().value(),"IDLE");
+                job=Utils.waitForStatusChange("RUNNING",job,100000,getClient());
+                Assert.assertEquals("The job status is RUNNING",job.getStatus().value(),"RUNNING");
+                job=Utils.waitForStatusChange("DONE",job,100000,getClient());
+                Assert.assertEquals("The job status is DONE",job.getStatus().value(),"DONE");
+                logger.info(String.format("%s testJobStatusCycle OUT",TestLocalJobs.class));
+        }
 
         @Test
         public void testAfterJob() throws Exception {
@@ -108,6 +109,7 @@ public class TestLocalJobs {
                 Job job=getClient().SendJob(req.get());
                 job=Utils.waitForStatusChange("DONE",job,100000,getClient());
                 //test results
+                checkResults(job);
                 //tet logs
                 checkLog(job);
                 //test delete
@@ -116,6 +118,7 @@ public class TestLocalJobs {
         }
 
         private void checkDelete(Job in) throws Exception {
+                logger.info(String.format("%s checking deletion",TestLocalJobs.class));
                 PipelineClient client=getClient();
                 client.Delete(in.getId());
                 try{
@@ -132,12 +135,28 @@ public class TestLocalJobs {
         }
 
         private void checkLog(Job in) throws IOException {
+                logger.info(String.format("%s checking log",TestLocalJobs.class));
                 String fromServer=getClient().log(in.getId());
                 File logFile=new File(Utils.logPath(in.getId()));
                 String fromFile=Files.toString(logFile,Charset.defaultCharset());
                 Assert.assertEquals("The log from the server and the file are equal",fromServer,fromFile);
         }
 
+
+        private void checkResults(Job in) {
+                logger.info(String.format("%s checking results",TestLocalJobs.class));
+                List<Result> results=new JobWrapper(in).getResults().getResult();
+                //first level
+                for( Result firstLevelResult:results){
+                        for (Result result: firstLevelResult.getResult()){
+                                Assert.assertTrue(String.format("The file  %s exists",result.getFile()),
+                                Files.isFile().apply(new File(URI.create(result.getFile()))));
+
+                        }
+                }
+
+
+        }
 
  
        
