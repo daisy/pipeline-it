@@ -2,15 +2,18 @@ package org.daisy.integration;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import org.daisy.pipeline.webservice.jabx.base.Alive;
-import org.glassfish.jersey.message.internal.NullOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.io.Files;
+
 
 public class PipelineLauncher {
         public static final String NIX_LAUNCHER = "pipeline2";
@@ -106,8 +109,10 @@ public class PipelineLauncher {
                 return result;
         }
         //stops the running pipeline
-        public boolean halt(){
-                return false;
+        public void halt() throws IOException {
+                File keyFile=new File(new File(System.getProperty("java.io.tmpdir")),"dp2key.txt");
+                String key=Files.readFirstLine(keyFile,Charset.defaultCharset());
+                this.client.Halt(key);
         }
         //cleans all the db and data from the pipeline residing in the given path
         public void clean(){

@@ -17,19 +17,23 @@ import com.google.common.base.Optional;
 
 public class TestLocalJobs {
         private static final Logger logger = LoggerFactory.getLogger(TestLocalJobs.class);
+        private static PipelineClient CLIENT=new PipelineClient("http://localhost:8181/ws");
+        private static PipelineLauncher LAUNCHER;
 
         private static PipelineClient getClient(){
-                return new PipelineClient("http://localhost:8181/ws");
+                return CLIENT;
         }
         @BeforeClass
         public static void bringUp() throws IOException {
                 System.setProperty("enableLogging", "true");
-                Utils.startPipeline(getClient());
+                LAUNCHER=Utils.startPipeline(getClient());
+                boolean up=LAUNCHER.launch();
+                Assert.assertTrue("The pipeline is up",up);
         }
 
         @AfterClass
         public static void bringDown() throws IOException {
-                Utils.stopPipeline(getClient());
+                LAUNCHER.halt();
                 
         }
 
@@ -37,10 +41,10 @@ public class TestLocalJobs {
         public void testAlive() throws Exception {
                 logger.info(String.format("%s testAlive IN",TestLocalJobs.class));
         
-               Alive alive = getClient().Alive(); 
-               Assert.assertTrue("The version is empty",alive.getVersion().length()>0);
-               Assert.assertTrue("The ws doesn't accept local jobs",alive.getLocalfs().equalsIgnoreCase("true"));
-               Assert.assertTrue("The ws needs credentials",alive.getAuthentication().equalsIgnoreCase("false"));
+                Alive alive = getClient().Alive(); 
+                Assert.assertTrue("The version is empty",alive.getVersion().length()>0);
+                Assert.assertTrue("The ws doesn't accept local jobs",alive.getLocalfs().equalsIgnoreCase("true"));
+                Assert.assertTrue("The ws needs credentials",alive.getAuthentication().equalsIgnoreCase("false"));
                 logger.info(String.format("%s testAlive OUT",TestLocalJobs.class));
         }
 

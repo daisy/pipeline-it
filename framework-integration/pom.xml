@@ -69,30 +69,29 @@
           <systemProperties>
             <property>
               <name>pipeline.path</name>
-              <!--<value>${project.build.directory}/target/checkout/target/dev-launcher/bin/</value>-->
-              <value>${project.build.directory}/../../../pipeline-assembly/target/dev-launcher/bin/</value><!-- this will change soon but just for speeding up the testing process -->
-
+              <value>${project.build.directory}/checkout/target/dev-launcher/</value>
+              <!--<value>${project.build.directory}/../../../pipeline-assembly/target/dev-launcher/bin/</value>[> this will change soon but just for speeding up the testing process <]-->
             </property>
           </systemProperties>
         </configuration>
       </plugin>
-      <!--<plugin>-->
-        <!--<groupId>org.apache.maven.plugins</groupId>-->
-        <!--<artifactId>maven-scm-plugin</artifactId>-->
-        <!--<version>1.9</version>-->
-        <!--<executions>-->
-          <!--<execution>-->
-            <!--<id>fetch_assembly</id>-->
-            <!--<phase>compile</phase>-->
-            <!--<goals>-->
-              <!--<goal>bootstrap</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-              <!--<goals>install</goals>-->
-            <!--</configuration>-->
-          <!--</execution>-->
-        <!--</executions>-->
-      <!--</plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-plugin</artifactId>
+        <version>1.9</version>
+        <executions>
+          <execution>
+            <id>fetch_assembly</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>bootstrap</goal>
+            </goals>
+            <configuration>
+              <goals>install</goals>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>

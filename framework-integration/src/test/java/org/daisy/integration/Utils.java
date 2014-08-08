@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
-import com.google.common.io.Files;
 
 public class Utils {
         public final static String SCRIPT="dtbook-to-epub3";
@@ -26,20 +25,16 @@ public class Utils {
         public final static String NICE_NAME="NICE_NAME";
         private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
-        public static void startPipeline(PipelineClient client) throws IOException {
+        public static PipelineLauncher startPipeline(PipelineClient client) throws IOException {
         
                 //Just for testing this will disappear soon
-                File path=new File(System.getProperty("pipeline.path"));
-                boolean up=PipelineLauncher.newLauncher(path,client)
-                        .setEnv("JAVA_OPTS","-Dgosh.args=--noi")
-                        .launch();
-                Assert.assertTrue("The pipeline is not up",up);
+                File path=new File(new File(System.getProperty("pipeline.path")),"bin");
+                PipelineLauncher launcher=PipelineLauncher.newLauncher(path,client)
+                        .setEnv("JAVA_OPTS","-Dgosh.args=--noi");
+                return launcher;
         }
 
         public static void stopPipeline(PipelineClient client) throws IOException {
-                File keyFile=new File(new File(System.getProperty("java.io.tmpdir")),"dp2key.txt");
-                String key=Files.readFirstLine(keyFile,Charset.defaultCharset());
-                client.Halt(key);
         }
 
         public static Optional<JobRequest> getJobRequest(PipelineClient client)
