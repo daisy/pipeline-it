@@ -59,19 +59,20 @@ public class TestLocalJobs {
                 logger.info(String.format("%s testScripts OUT",TestLocalJobs.class));
         }
 
-        @Test
-        public void testSendJob() throws Exception {
-                logger.info(String.format("%s testSendJob IN",TestLocalJobs.class));
-                Optional<JobRequest> req = Utils.getJobRequest(getClient());
+        //@Test
+        //public void testSendJob() throws Exception {
+                //logger.info(String.format("%s testSendJob IN",TestLocalJobs.class));
+                //Optional<JobRequest> req = Utils.getJobRequest(getClient());
                 
-                Assert.assertTrue("Couldn't build the request",req.isPresent());
-                Job job=getClient().SendJob(req.get());
-                Assert.assertTrue("Job has been sent",job.getId()!=null &&job.getId().length()>0);
-                //So we don't over load the pipeline with different jobs
-                checkJobInfo(job);
-                logger.info(String.format("%s testSendJob OUT",TestLocalJobs.class));
+                //Assert.assertTrue("Couldn't build the request",req.isPresent());
+                //Job job=getClient().SendJob(req.get());
+                //Assert.assertTrue("Job has been sent",job.getId()!=null &&job.getId().length()>0);
+                ////So we don't over load the pipeline with different jobs
+                //checkJobInfo(job);
+                //Utils.waitForStatusChange("DONE",job,100000,getClient());
+                //logger.info(String.format("%s testSendJob OUT",TestLocalJobs.class));
 
-        }
+        //}
 
         private void checkJobInfo(Job in) throws Exception {
                 Job job = getClient().Job(in.getId());
@@ -123,7 +124,10 @@ public class TestLocalJobs {
                 }catch(javax.ws.rs.NotFoundException nfe){
 
                 }
-                //TODO: check there is no data
+
+                File jobData=new File(Utils.jobPath(in.getId()));
+                Assert.assertFalse("Make sure the data folder doesn't exist anymore",Files.isDirectory().apply(jobData));
+
 
         }
 

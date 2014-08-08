@@ -98,5 +98,11 @@ public class Utils {
                         "data","jobs",id,id+".log"};
                 return Joiner.on(File.separator).join(path);
         }
+
+        public static String jobPath(String id){
+                String path[]=new String[]{System.getProperty("pipeline.path"),
+                        "data","jobs",id};
+                return Joiner.on(File.separator).join(path);
+        }
         
 }
