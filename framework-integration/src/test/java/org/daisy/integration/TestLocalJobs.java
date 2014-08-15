@@ -11,14 +11,17 @@ import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.job.Result;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 public class TestLocalJobs {
@@ -29,16 +32,41 @@ public class TestLocalJobs {
         private static PipelineClient getClient(){
                 return CLIENT;
         }
+
+        List<Job> toDelete;
+        @Before
+        public void setUp(){
+                toDelete=Lists.newLinkedList();
+
+        }
+        @After
+        public void tearDown(){
+               logger.info(String.format("There are %s jobs to delete", toDelete.size()));
+                for ( Job j:this.toDelete){
+                        try{
+                                logger.info(String.format("Deleting job %s",j.getId()));
+                                getClient().delete(j.getId());
+                        }catch (Exception e){
+                                logger.info(e.getMessage());
+                        
+                        }
+                }
+               logger.info(String.format("There are %s jobs after the test", getClient().jobs().getJob().size()));
+
+        }
         @BeforeClass
         public static void bringUp() throws IOException {
-                System.setProperty("enableLogging", "true");
                 LAUNCHER=Utils.startPipeline(getClient());
                 boolean up=LAUNCHER.launch();
                 Assert.assertTrue("The pipeline is up",up);
         }
 
         @AfterClass
-        public static void bringDown() throws IOException {
+        public static void bringDown() throws Exception {
+            System.setProperty("enableLogging", "true");
+                for (Job j:getClient().jobs().getJob()){
+                        getClient().delete(j.getId());
+                }
                 LAUNCHER.halt();
         }
 
@@ -68,6 +96,7 @@ public class TestLocalJobs {
                 
                 Assert.assertTrue("Couldn't build the request",req.isPresent());
                 Job job=getClient().sendJob(req.get());
+                this.toDelete.add(job);
                 Assert.assertTrue("Job has been sent",job.getId()!=null &&job.getId().length()>0);
                 //So we don't over load the pipeline with different jobs
                 checkJobInfo(job);
@@ -92,14 +121,17 @@ public class TestLocalJobs {
                 Optional<JobRequest> req = Utils.getJobRequest(getClient());
                 //send two jobs
                 //TODO: Adjust the number of jobs via properties to be sure
-                getClient().sendJob(req.get());
+                this.toDelete.add(getClient().sendJob(req.get()));
+                this.toDelete.add(getClient().sendJob(req.get()));
                 Job job=getClient().sendJob(req.get());
+                this.toDelete.add(job);
                 Assert.assertEquals("The job status is IDLE",job.getStatus().value(),"IDLE");
                 job=Utils.waitForStatusChange("RUNNING",job,100000,getClient());
                 Assert.assertEquals("The job status is RUNNING",job.getStatus().value(),"RUNNING");
                 job=Utils.waitForStatusChange("DONE",job,100000,getClient());
                 Assert.assertEquals("The job status is DONE",job.getStatus().value(),"DONE");
                 logger.info(String.format("%s testJobStatusCycle OUT",TestLocalJobs.class));
+        
         }
 
         @Test
@@ -107,6 +139,7 @@ public class TestLocalJobs {
                 logger.info(String.format("%s testAfterJob IN",TestLocalJobs.class));
                 Optional<JobRequest> req = Utils.getJobRequest(getClient());
                 Job job=getClient().sendJob(req.get());
+                this.toDelete.add(job);
                 job=Utils.waitForStatusChange("DONE",job,100000,getClient());
                 //test results
                 checkResults(job);

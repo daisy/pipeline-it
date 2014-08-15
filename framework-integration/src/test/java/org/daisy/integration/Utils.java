@@ -33,7 +33,12 @@ public class Utils {
                 return launcher;
         }
 
+
         public static Optional<JobRequest> getJobRequest(PipelineClient client)
+                        throws URISyntaxException {
+              return getJobRequest(client,Priority.LOW);
+        }
+        public static Optional<JobRequest> getJobRequest(PipelineClient client,Priority priority)
                         throws URISyntaxException {
                 ObjectFactory reqFactory= new ObjectFactory();
                 JobRequest req=reqFactory.createJobRequest();
@@ -56,7 +61,7 @@ public class Utils {
                 req.getScriptOrNicenameOrPriority()
                         .add(NICE_NAME);
                 req.getScriptOrNicenameOrPriority().add(input);
-                req.getScriptOrNicenameOrPriority().add(Priority.fromValue("low"));
+                req.getScriptOrNicenameOrPriority().add(priority);
                 return Optional.of(req);
         }
 

@@ -3,6 +3,7 @@ package org.daisy.integration;
 import java.io.IOException;
 import java.util.List;
 
+import org.daisy.pipeline.webservice.jabx.request.Priority;
 import org.daisy.pipeline.webservice.jabx.queue.Queue;
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.job.Jobs;
@@ -57,16 +58,30 @@ public class TestMultipleJobs {
         @Test
         public void testPriorites() throws Exception {
                 logger.info(String.format("%s testQueue IN",TestLocalJobs.class));
-                Optional<JobRequest> req = Utils.getJobRequest(CLIENT);
                 List<Job> jobs =Lists.newLinkedList();
+                Priority[] prios = new Priority[]{Priority.HIGH,Priority.HIGH,Priority.HIGH,
+                       Priority.LOW,Priority.MEDIUM,Priority.HIGH};
 
-                for (int i= 0; i<5;i++){
+                for (int i= 0; i<6;i++){
+                        //remove the priority
+                        Optional<JobRequest> req = Utils.getJobRequest(CLIENT,prios[i]);
                         jobs.add(CLIENT.sendJob(req.get()));
+                        if (i==2){//wait to have a more equal relative time for the next 3 jobs
+                                try {
+                                        Thread.sleep(1000);                 
+                                } catch(InterruptedException ex) {
+                                        Thread.currentThread().interrupt();
+                                }
+                        }
                 }
                 
                 try{
                         List<org.daisy.pipeline.webservice.jabx.queue.Job> queue =CLIENT.queue().getJob();
                         org.daisy.pipeline.webservice.jabx.queue.Job last=queue.get(queue.size()-1);
+                        Assert.assertEquals("last job has priority low",last.getJobPriority().value(),"low");
+                        Assert.assertEquals("next to last job has priority medium",queue.get(queue.size()-2).getJobPriority().value(),"medium");
+                        Assert.assertEquals("first job has priority high",queue.get(queue.size()-3).getJobPriority().value(),"high");
+
                         queue=CLIENT.moveUp(last.getId()).getJob();
                         Assert.assertEquals("The last job has been moved up",last.getId(),queue.get(queue.size()-2).getId());
                         queue=CLIENT.moveDown(last.getId()).getJob();
