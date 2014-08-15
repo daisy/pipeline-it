@@ -70,7 +70,7 @@
             <property>
               <name>pipeline.path</name>
               <value>${project.build.directory}/checkout/target/dev-launcher/</value>
-              <!--<value>${project.build.directory}/../../../pipeline-assembly/target/dev-launcher/bin/</value>[> this will change soon but just for speeding up the testing process <]-->
+              <!--<value>${project.build.directory}/../../../pipeline-assembly/target/dev-launcher/</value>[> this will change soon but just for speeding up the testing process <]-->
             </property>
           </systemProperties>
         </configuration>

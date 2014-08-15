@@ -105,4 +105,9 @@ public class Utils {
                 return Joiner.on(File.separator).join(path);
         }
         
+        public static PipelineClient getClient(){
+                return new PipelineClient("http://localhost:8181/ws");
+        }
 }
+
+

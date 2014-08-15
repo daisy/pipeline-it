@@ -23,7 +23,7 @@ import com.google.common.io.Files;
 
 public class TestLocalJobs {
         private static final Logger logger = LoggerFactory.getLogger(TestLocalJobs.class);
-        private static PipelineClient CLIENT=new PipelineClient("http://localhost:8181/ws");
+        private static PipelineClient CLIENT=Utils.getClient();
         private static PipelineLauncher LAUNCHER;
 
         private static PipelineClient getClient(){

@@ -1,5 +1,6 @@
 package org.daisy.integration;
 
+
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -9,6 +10,7 @@ import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.job.Jobs;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
+import org.daisy.pipeline.webservice.jabx.queue.Queue;
 /**
  * Simple but full-featured pipline2 WS client
  */
@@ -63,6 +65,16 @@ public class PipelineClient {
 
         public String log(String id){
                 return this.get(String.format("jobs/%s/log",id),String.class);
+        }
+
+        public Queue queue() throws Exception{
+                return this.get(String.format("queue"),Queue.class);
+        }
+        public Queue moveUp(String id) throws Exception{
+                return this.get(String.format("queue/up/%s",id),Queue.class);
+        }
+        public Queue moveDown(String id) throws Exception{
+                return this.get(String.format("queue/down/%s",id),Queue.class);
         }
 }
 
