@@ -12,6 +12,7 @@ import org.daisy.pipeline.webservice.jabx.queue.Queue;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
 import org.daisy.pipeline.webservice.jabx.client.Clients;
+import org.daisy.pipeline.webservice.jabx.client.Client;
 /**
  * Simple but full-featured pipline2 WS client
  */
@@ -35,6 +36,11 @@ public class PipelineClient {
         private <T,U> U post(String path,T payload,Class<U> result) {
                 
                 return target.path(path).request().post(Entity.xml(payload),result);
+
+        }
+        private <T,U> U put(String path,T payload,Class<U> result) {
+                
+                return target.path(path).request().put(Entity.xml(payload),result);
 
         }
 
@@ -82,6 +88,21 @@ public class PipelineClient {
 
         public Clients clients() {
                 return this.get(String.format("admin/clients"),Clients.class);
+        }
+
+        public Client addClient(Client client) throws Exception{
+                return this.post(String.format("admin/clients"),client,Client.class);
+        }
+
+        public void deleteClient(String id) throws Exception{
+                this.delete(String.format("admin/clients/%s",id),Void.class);
+        }
+
+        public Client updateClient(Client client) throws Exception{
+                return this.put(String.format("admin/clients/%s",client.getId()),client,Client.class);
+        }
+        public Client client(String id) throws Exception{
+                return this.get(String.format("admin/clients/%s",id),Client.class);
         }
 }
 
