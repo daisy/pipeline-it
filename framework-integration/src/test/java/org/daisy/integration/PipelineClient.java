@@ -8,9 +8,10 @@ import javax.ws.rs.client.WebTarget;
 import org.daisy.pipeline.webservice.jabx.base.Alive;
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.job.Jobs;
+import org.daisy.pipeline.webservice.jabx.queue.Queue;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
-import org.daisy.pipeline.webservice.jabx.queue.Queue;
+import org.daisy.pipeline.webservice.jabx.client.Clients;
 /**
  * Simple but full-featured pipline2 WS client
  */
@@ -59,9 +60,6 @@ public class PipelineClient {
         public void delete(String id) throws Exception{
                 this.delete(String.format("jobs/%s",id),Void.class);
         }
-        public void halt(String key) {
-                this.get(String.format("admin/halt/%s",key),Void.class);
-        }
 
         public String log(String id){
                 return this.get(String.format("jobs/%s/log",id),String.class);
@@ -76,5 +74,15 @@ public class PipelineClient {
         public Queue moveDown(String id) throws Exception{
                 return this.get(String.format("queue/down/%s",id),Queue.class);
         }
+
+        /// ADMIN calls
+        public void halt(String key) {
+                this.get(String.format("admin/halt/%s",key),Void.class);
+        }
+
+        public Clients clients() {
+                return this.get(String.format("admin/clients"),Clients.class);
+        }
 }
+
 
