@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import org.apache.commons.io.FileUtils;
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.request.Input;
 import org.daisy.pipeline.webservice.jabx.request.Item;
@@ -29,7 +30,7 @@ public class Utils {
                 //Just for testing this will disappear soon
                 File path=new File(new File(System.getProperty("pipeline.path")),"bin");
                 PipelineLauncher launcher=PipelineLauncher.newLauncher(path,client)
-                        .setEnv("JAVA_OPTS","-Dgosh.args=--noi");
+                        .setProperty("gosh.args","--noi");
                 return launcher;
         }
 
@@ -112,6 +113,13 @@ public class Utils {
         
         public static PipelineClient getClient(){
                 return new PipelineClient("http://localhost:8181/ws");
+        }
+        public static PipelineClient getClient(String id,String secret){
+                return new PipelineClient("http://localhost:8181/ws",id,secret);
+        }
+        //use only when extrictly necessary
+        public static void cleanUpDb() throws IOException {
+           FileUtils.deleteDirectory(new File(new File(new File(System.getProperty("pipeline.path")),"data"),"db")); 
         }
 }
 
