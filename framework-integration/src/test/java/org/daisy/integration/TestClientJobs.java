@@ -5,6 +5,7 @@ import java.util.List;
 import org.daisy.pipeline.webservice.jabx.client.Client;
 import org.daisy.pipeline.webservice.jabx.client.Priority;
 import org.daisy.pipeline.webservice.jabx.job.Job;
+import org.daisy.pipeline.webservice.jabx.queue.Queue;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -110,9 +111,44 @@ public class TestClientJobs {
 
                 Job fromServer=clientDef.job(other.getId());
                 Assert.assertNotNull("Admin accessed the client app job",fromServer);
+                Utils.waitForStatusChange("DONE",admin,100000,clientDef);
+                Utils.waitForStatusChange("DONE",other,100000,clientDef);
 
 
                 logger.info("job access OUT");
+        }
+
+        @Test
+        public void testQueueAccess() throws Exception {
+                logger.info("queue access IN");
+                PipelineClient clientDef=Utils.getClient(CREDS_DEF.clientId,CREDS_DEF.secret);
+                PipelineClient clientOther=Utils.getClient(CREDS_OTHER.clientId,CREDS_OTHER.secret);
+                Optional<JobRequest> req = Utils.getJobRequest(clientDef);
+                toDelete.add(clientDef.sendJob(req.get()));
+                toDelete.add(clientDef.sendJob(req.get()));
+                toDelete.add(clientDef.sendJob(req.get()));
+                Job last=clientDef.sendJob(req.get());
+                toDelete.add(last);
+
+                Queue qAdmin=clientDef.queue();
+                Queue qOther=clientOther.queue();
+
+                Assert.assertTrue("Admin queue has jobs", qAdmin.getJob().size()>0);
+                Assert.assertEquals("Clientapp queue hasn't got any", qOther.getJob().size(),0);
+
+                toDelete.add(clientDef.sendJob(req.get()));
+                toDelete.add(clientDef.sendJob(req.get()));
+
+
+                try {
+                        clientOther.moveUp(qAdmin.getJob().get(qAdmin.getJob().size()-1).getId());
+                        Assert.fail("Other shouldn't be able to move other client jobs around");
+                } catch(Exception e){
+                }
+                
+                Utils.waitForStatusChange("DONE",last,100000,clientDef);
+                logger.info("queue  access OUT");
+                
         }
         
         private static class Creds{
