@@ -24,7 +24,7 @@ public class TestClientJobs {
 
         private static final Logger logger = LoggerFactory.getLogger(TestClientJobs.class);
         private static PipelineLauncher LAUNCHER;
-        private static Creds CREDS_DEF=new Creds();
+        public static Creds CREDS_DEF=new Creds();
         private static Creds CREDS_OTHER=new Creds();
         static {
                 CREDS_DEF.clientId="clientId";
@@ -151,7 +151,7 @@ public class TestClientJobs {
                 
         }
         
-        private static class Creds{
+        static class Creds{
                 String clientId;
                 String secret;
         }

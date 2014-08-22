@@ -91,7 +91,7 @@ public class PipelineLauncher {
 
                         
                         public Boolean call() {
-                                int times=1;
+              int times=1;
                                 while (!done) {
                                         logger.info(String.format("Waiting for the ws(%d)...",times++));
                                         Alive alive = null;
@@ -106,22 +106,29 @@ public class PipelineLauncher {
                                         try {
                                                 Thread.sleep(1000);
                                         } catch (InterruptedException e) {
-                                                e.printStackTrace();
+                                                done=true;
                                         }
                                 }
                                 return done;
                         }
 
                 };
-                FutureTask<Boolean> t = new FutureTask<Boolean>(c);
-                t.run();
+                final FutureTask<Boolean> t = new FutureTask<Boolean>(c);
+                new Thread(){
+                        public void run(){
+                                t.run();
+                        }
+                }.start();
                 boolean result = false;
 
                 try {
-                        result = t.get(30, TimeUnit.SECONDS);
+                        //Godel may disagree with this
+                        result = t.get(25, TimeUnit.SECONDS);
                 } catch (Exception e) {
                         logger.error("Timed out waiting for the pipeline "+e.getMessage());
+                        t.cancel(true);
                 }
+                
                 
                 return result;
         }
