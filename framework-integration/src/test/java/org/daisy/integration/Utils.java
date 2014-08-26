@@ -41,10 +41,14 @@ public class Utils {
         }
         public static Optional<JobRequest> getJobRequest(PipelineClient client,Priority priority)
                         throws URISyntaxException {
+                File hauy=new File(Utils.class.getClassLoader().getResource("dtbook/hauy_valid.xml").toURI());
+                return Utils.getJobRequest(client,priority,hauy.toURI().toString());
+        }
+        public static Optional<JobRequest> getJobRequest(PipelineClient client,Priority priority,String path)
+                        throws URISyntaxException {
                 ObjectFactory reqFactory= new ObjectFactory();
                 JobRequest req=reqFactory.createJobRequest();
                 Script script=reqFactory.createScript();
-                File hauy=new File(Utils.class.getClassLoader().getResource("dtbook/hauy_valid.xml").toURI());
 
                 Optional<String> href=Utils.getScriptHref(SCRIPT,client);
                 if (!href.isPresent()){
@@ -53,7 +57,7 @@ public class Utils {
                 script.setHref(href.get());
                 //set the source
                 Item source = reqFactory.createItem();
-                source.setValue(hauy.toURI().toString());
+                source.setValue(path);
                 Input input = reqFactory.createInput();
                 input.getItem().add(source);
                 input.setName("source");

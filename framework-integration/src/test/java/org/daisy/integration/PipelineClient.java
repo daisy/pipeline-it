@@ -2,6 +2,7 @@ package org.daisy.integration;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -13,6 +14,7 @@ import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.codec.binary.Base64;
@@ -25,6 +27,9 @@ import org.daisy.pipeline.webservice.jabx.queue.Queue;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +44,9 @@ public class PipelineClient {
         private WebTarget target;
 
         public PipelineClient(String baseUri) {
-                this.target = ClientBuilder.newClient().target(baseUri);
+                ClientConfig config=new ClientConfig();
+                config.register(MultiPartFeature.class);
+                this.target = ClientBuilder.newClient(config).target(baseUri);
         }
         public PipelineClient(String baseUri,String clientId,String secret) {
                 this.target = ClientBuilder.newClient(new ClientConfig().register(new Authenticator(clientId,secret))).target(baseUri);
@@ -57,6 +64,15 @@ public class PipelineClient {
         private <T,U> U post(String path,T payload,Class<U> result) {
                 
                 return target.path(path).request().post(Entity.xml(payload),result);
+
+        }
+        private <T,U>  U postMultipart(String path,T payload, InputStream stream, Class<U> result) {
+                FormDataMultiPart data=new FormDataMultiPart();
+                data.field("job-data",stream,MediaType.APPLICATION_OCTET_STREAM_TYPE);
+                FormDataBodyPart request=new FormDataBodyPart("job-request",payload,MediaType.APPLICATION_XML_TYPE);
+                data.bodyPart(request);
+                
+                return target.path(path).request().post(Entity.entity(data,MediaType.MULTIPART_FORM_DATA_TYPE),result);
 
         }
         private <T,U> U put(String path,T payload,Class<U> result) {
@@ -79,6 +95,9 @@ public class PipelineClient {
 
         public Job sendJob(JobRequest request) throws Exception{
                 return this.post("jobs",request,Job.class);
+        }
+        public Job sendJob(JobRequest request,InputStream data) throws Exception{
+                return this.postMultipart("jobs",request,data,Job.class);
         }
 
         public Job job(String id) throws Exception{
