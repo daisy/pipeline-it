@@ -20,7 +20,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 
 public class Utils {
-        public final static String SCRIPT="dtbook-to-epub3";
+        public final static String SCRIPT="dtbook-to-zedai";
         public final static String SOURCE="hauy_valid.xml";
         public final static String NICE_NAME="NICE_NAME";
         private static final Logger logger = LoggerFactory.getLogger(Utils.class);
@@ -86,6 +86,10 @@ public class Utils {
                 Job job=in;
                 logger.info(String.format("Waiting for status %s",status));
                 while(job.getStatus().value()!=status){
+                        if (job.getStatus().value()=="ERROR"){
+                                throw new RuntimeException("Job errored while waiting for another status");
+                        }
+                
                         job=client.job(job.getId());
                         try {
                                 Thread.sleep(500);                 

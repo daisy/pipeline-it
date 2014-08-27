@@ -15,6 +15,7 @@ import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.codec.binary.Base64;
@@ -42,18 +43,26 @@ public class PipelineClient {
         private static final Logger logger = LoggerFactory.getLogger(PipelineClient.class);
 
         private WebTarget target;
+        private String baseUri;
 
         public PipelineClient(String baseUri) {
+                this.baseUri=baseUri;
                 ClientConfig config=new ClientConfig();
                 config.register(MultiPartFeature.class);
                 this.target = ClientBuilder.newClient(config).target(baseUri);
         }
         public PipelineClient(String baseUri,String clientId,String secret) {
+                this.baseUri=baseUri;
                 this.target = ClientBuilder.newClient(new ClientConfig().register(new Authenticator(clientId,secret))).target(baseUri);
         }
         private <T> T get(String path,Class<T> result) {
                 
                 return target.path(path).request().get(result);
+
+        }
+        public Response get(String path) {
+                
+                return target.path(path).request().get();
 
         }
         private <T> T delete(String path,Class<T> result) {
@@ -143,6 +152,13 @@ public class PipelineClient {
         }
         public Client client(String id) throws Exception{
                 return this.get(String.format("admin/clients/%s",id),Client.class);
+        }
+
+        /**
+         * @return the baseUri
+         */
+        public String getBaseUri() {
+                return baseUri;
         }
 
         private static class Authenticator implements ClientRequestFilter {
