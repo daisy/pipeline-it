@@ -3,9 +3,9 @@ package org.daisy.integration;
 import java.io.IOException;
 import java.util.List;
 
-import org.daisy.pipeline.webservice.jabx.client.Client;
-import org.daisy.pipeline.webservice.jabx.client.Clients;
-import org.daisy.pipeline.webservice.jabx.client.Priority;
+import org.daisy.pipeline.webservice.jabx.clients.Client;
+import org.daisy.pipeline.webservice.jabx.clients.Clients;
+import org.daisy.pipeline.webservice.jabx.clients.Priority;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;

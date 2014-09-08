@@ -2,8 +2,8 @@ package org.daisy.integration;
 
 import java.util.List;
 
-import org.daisy.pipeline.webservice.jabx.client.Client;
-import org.daisy.pipeline.webservice.jabx.client.Priority;
+import org.daisy.pipeline.webservice.jabx.clients.Client;
+import org.daisy.pipeline.webservice.jabx.clients.Priority;
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.queue.Queue;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;

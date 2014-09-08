@@ -20,10 +20,11 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.codec.binary.Base64;
 import org.daisy.pipeline.webservice.jabx.base.Alive;
-import org.daisy.pipeline.webservice.jabx.client.Client;
-import org.daisy.pipeline.webservice.jabx.client.Clients;
+import org.daisy.pipeline.webservice.jabx.clients.Client;
+import org.daisy.pipeline.webservice.jabx.clients.Clients;
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.job.Jobs;
+import org.daisy.pipeline.webservice.jabx.properties.Properties;
 import org.daisy.pipeline.webservice.jabx.queue.Queue;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
@@ -152,6 +153,9 @@ public class PipelineClient {
         }
         public Client client(String id) throws Exception{
                 return this.get(String.format("admin/clients/%s",id),Client.class);
+        }
+        public Properties properties() throws Exception{
+                return this.get("admin/properties",Properties.class);
         }
 
         /**
