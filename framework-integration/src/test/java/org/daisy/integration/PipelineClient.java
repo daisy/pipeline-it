@@ -23,6 +23,7 @@ import org.daisy.pipeline.webservice.jabx.base.Alive;
 import org.daisy.pipeline.webservice.jabx.clients.Client;
 import org.daisy.pipeline.webservice.jabx.clients.Clients;
 import org.daisy.pipeline.webservice.jabx.job.Job;
+import org.daisy.pipeline.webservice.jabx.job.JobSizes;
 import org.daisy.pipeline.webservice.jabx.job.Jobs;
 import org.daisy.pipeline.webservice.jabx.properties.Properties;
 import org.daisy.pipeline.webservice.jabx.queue.Queue;
@@ -156,6 +157,9 @@ public class PipelineClient {
         }
         public Properties properties() throws Exception{
                 return this.get("admin/properties",Properties.class);
+        }
+        public JobSizes sizes() throws Exception{
+                return this.get("admin/sizes",JobSizes.class);
         }
 
         /**
