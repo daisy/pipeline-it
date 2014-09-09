@@ -57,7 +57,7 @@ public class TestNonLocalJobs {
         @BeforeClass
         public static void bringUp() throws IOException {
                 LAUNCHER=Utils.startPipeline(CLIENT);
-                LAUNCHER.setEnv("PIPELINE2_LOCAL","-Dorg.daisy.pipeline.ws.localfs=false");
+                LAUNCHER.setEnv("PIPELINE2_LOCAL","false");
                 boolean up=LAUNCHER.launch();
                 Assert.assertTrue("The pipeline is up",up);
         }

@@ -37,7 +37,7 @@ public class TestClientJobs {
             System.setProperty("enableLogging", "true");
                 PipelineClient clientDef=Utils.getClient(CREDS_DEF.clientId,CREDS_DEF.secret);
                 LAUNCHER=Utils.startPipeline(clientDef);
-                LAUNCHER.setEnv("PIPELINE2_AUTH","-Dorg.daisy.pipeline.ws.authentication=true");
+                LAUNCHER.setEnv("PIPELINE2_AUTH","true");
                 LAUNCHER.setProperty("org.daisy.pipeline.ws.authentication.authentication","true");
                 LAUNCHER.setProperty("org.daisy.pipeline.ws.authentication.key",CREDS_DEF.clientId);
                 LAUNCHER.setProperty("org.daisy.pipeline.ws.authentication.secret",CREDS_DEF.secret);
