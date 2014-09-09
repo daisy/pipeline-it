@@ -68,7 +68,7 @@ public class PipelineLauncher {
         public boolean launch() throws IOException {
 
                 String script=NIX_LAUNCHER;
-                if (System.getProperty("os.name").contains("windows")){
+                if (System.getProperty("os.name").contains("Windows")){
                         script=WIN_LAUNCHER;
                 }
 
