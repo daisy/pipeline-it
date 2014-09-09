@@ -77,8 +77,8 @@
           <systemProperties>
             <property>
               <name>pipeline.path</name>
-              <!--<value>${project.build.directory}/checkout/target/dev-launcher/</value>-->
-              <value>${project.build.directory}/../../../pipeline-assembly/target/dev-launcher/</value>
+	      <value>${project.build.directory}/checkout/target/dev-launcher/</value>
+              <!--<value>${project.build.directory}/../../../pipeline-assembly/target/dev-launcher/</value>-->
             </property>
           </systemProperties>
         </configuration>
@@ -95,7 +95,11 @@
               <goal>bootstrap</goal>
             </goals>
             <configuration>
+	      <scmVersion>auth_local_via_env</scmVersion>
+	      <scmVersionType>branch</scmVersionType>
               <goals>install</goals>
+              <profiles>dev-launcher</profiles>
+
             </configuration>
           </execution>
         </executions>
