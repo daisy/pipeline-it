@@ -67,16 +67,19 @@ public class PipelineLauncher {
         //launches the pipeline and waits it to be up
         public boolean launch() throws IOException {
 
+                String script=NIX_LAUNCHER;
+                if (System.getProperty("os.name").contains("Windows")){
+                        script=WIN_LAUNCHER;
+                }
+
                 ProcessBuilder pb = new ProcessBuilder(
-                                new File(this.path, NIX_LAUNCHER).toString());
+                                new File(this.path, script).toString());
                 HashMap<String,String> env=this.loadOps();
                 
                 pb.environment().putAll(env);
                 //redirect to tmp files
                 File err=File.createTempFile("pipelineErr",".txt");
-                err.deleteOnExit();
                 File out=File.createTempFile("pipelineOut",".txt");
-                err.deleteOnExit();
                 pb.redirectError(err);
                 pb.redirectOutput(out);
                 //start the process

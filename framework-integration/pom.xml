@@ -11,7 +11,7 @@
     <url>https://github.com/daisy/pipeline-assembly.git</url>
   </scm>
   <properties>
-    <slf4j.version>1.7.2</slf4j.version>
+    <slf4j.version>1.7.5</slf4j.version>
     <guava.version>15.0</guava.version>
   </properties>
   <dependencies>
@@ -55,7 +55,14 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
+
     </dependency>
+<dependency>
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-simple</artifactId>
+	<version>${slf4j.version}</version>
+</dependency>
+    
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
@@ -77,8 +84,8 @@
           <systemProperties>
             <property>
               <name>pipeline.path</name>
-              <!--<value>${project.build.directory}/checkout/target/dev-launcher/</value>-->
-              <value>${project.build.directory}/../../../pipeline-assembly/target/dev-launcher/</value>
+	      <value>${project.build.directory}/checkout/target/dev-launcher/</value>
+              <!--<value>${project.build.directory}/../../../pipeline-assembly/target/dev-launcher/</value>-->
             </property>
           </systemProperties>
         </configuration>
@@ -95,7 +102,11 @@
               <goal>bootstrap</goal>
             </goals>
             <configuration>
+	      <scmVersion>auth_local_via_env</scmVersion>
+	      <scmVersionType>branch</scmVersionType>
               <goals>install</goals>
+              <profiles>dev-launcher</profiles>
+
             </configuration>
           </execution>
         </executions>

@@ -18,7 +18,7 @@ public class TestAuthenticationErrors {
                 PipelineClient client=Utils.getClient(TestClientJobs.CREDS_DEF.clientId,TestClientJobs.CREDS_DEF.secret);
                 PipelineLauncher launcher;
                 launcher=Utils.startPipeline(client);
-                launcher.setEnv("PIPELINE2_AUTH","-Dorg.daisy.pipeline.ws.authentication=true");
+                launcher.setEnv("PIPELINE2_AUTH","true");
                 //launcher.setProperty("org.daisy.pipeline.ws.authentication.key",TestClientJobs.CREDS_DEF.clientId);
                 //launcher.setProperty("org.daisy.pipeline.ws.authentication.secret",TestClientJobs.CREDS_DEF.secret);
 
@@ -31,7 +31,7 @@ public class TestAuthenticationErrors {
                 PipelineClient client=Utils.getClient(TestClientJobs.CREDS_DEF.clientId,TestClientJobs.CREDS_DEF.secret);
                 PipelineLauncher launcher;
                 launcher=Utils.startPipeline(client);
-                launcher.setEnv("PIPELINE2_AUTH","-Dorg.daisy.pipeline.ws.authentication=true");
+                launcher.setEnv("PIPELINE2_AUTH","true");
                 launcher.setProperty("org.daisy.pipeline.ws.authentication.key",TestClientJobs.CREDS_DEF.clientId);
                 launcher.setProperty("org.daisy.pipeline.ws.authentication.secret",TestClientJobs.CREDS_DEF.secret);
 
