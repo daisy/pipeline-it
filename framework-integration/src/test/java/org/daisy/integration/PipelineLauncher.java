@@ -25,8 +25,13 @@ public class PipelineLauncher {
         private List<String> opts= Lists.newLinkedList();
         private File path;
         private PipelineClient client;
+        private Process process;
         private static final Logger logger = LoggerFactory.getLogger(PipelineLauncher.class);
 
+
+        public static String getDataPath(){
+                return System.getProperty("pipeline.path")+File.separator+"data";
+        }
         /**
          * @param path
          */
@@ -66,6 +71,7 @@ public class PipelineLauncher {
 
         //launches the pipeline and waits it to be up
         public boolean launch() throws IOException {
+                
 
                 String script=NIX_LAUNCHER;
                 if (System.getProperty("os.name").contains("Windows")){
@@ -75,7 +81,8 @@ public class PipelineLauncher {
                 ProcessBuilder pb = new ProcessBuilder(
                                 new File(this.path, script).toString());
                 HashMap<String,String> env=this.loadOps();
-                
+                //add the data path
+                pb.environment().put("PIPELINE2_DATA",PipelineLauncher.getDataPath());
                 pb.environment().putAll(env);
                 //redirect to tmp files
                 File err=File.createTempFile("pipelineErr",".txt");
@@ -83,7 +90,7 @@ public class PipelineLauncher {
                 pb.redirectError(err);
                 pb.redirectOutput(out);
                 //start the process
-                pb.start();
+                this.process=pb.start();
                 logger.info("The process has been launched "
                                 + new File(this.path, NIX_LAUNCHER).toString());
                 //wait until process is up
@@ -136,10 +143,17 @@ public class PipelineLauncher {
                 return result;
         }
         //stops the running pipeline
-        public void halt() throws IOException {
+        public void halt() throws IOException{
                 File keyFile=new File(new File(System.getProperty("java.io.tmpdir")),"dp2key.txt");
                 String key=Files.readFirstLine(keyFile,Charset.defaultCharset());
                 this.client.halt(key);
+                try {
+                        this.process.waitFor();
+                } catch (InterruptedException e) {
+                        logger.info("Killing the pipeline");
+                        this.process.destroy();
+                }
+
         }
         //cleans all the db and data from the pipeline residing in the given path
         public void clean(){

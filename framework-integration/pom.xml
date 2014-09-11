@@ -13,6 +13,7 @@
   <properties>
     <slf4j.version>1.7.5</slf4j.version>
     <guava.version>15.0</guava.version>
+    <pipeline.version>1.8.1-SNAPSHOT</pipeline.version>
   </properties>
   <dependencies>
     <dependency>
@@ -84,7 +85,7 @@
           <systemProperties>
             <property>
               <name>pipeline.path</name>
-	      <value>${project.build.directory}/checkout/target/dev-launcher/</value>
+              <value>${project.build.directory}/checkout/target/pipeline2-${pipeline.version}/daisy-pipeline/</value>
               <!--<value>${project.build.directory}/../../../pipeline-assembly/target/dev-launcher/</value>-->
             </property>
           </systemProperties>
@@ -105,7 +106,7 @@
 	      <scmVersion>auth_local_via_env</scmVersion>
 	      <scmVersionType>branch</scmVersionType>
               <goals>install</goals>
-              <profiles>dev-launcher</profiles>
+              <profiles>!dev-launcher</profiles>
 
             </configuration>
           </execution>

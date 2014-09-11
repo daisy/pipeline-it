@@ -108,14 +108,14 @@ public class Utils {
 
         }
         public static String logPath(String id){
-                String path[]=new String[]{System.getProperty("pipeline.path"),
-                        "data","jobs",id,id+".log"};
+                String path[]=new String[]{PipelineLauncher.getDataPath(),
+                        "jobs",id,id+".log"};
                 return Joiner.on(File.separator).join(path);
         }
 
         public static String jobPath(String id){
-                String path[]=new String[]{System.getProperty("pipeline.path"),
-                        "data","jobs",id};
+                String path[]=new String[]{PipelineLauncher.getDataPath(),
+                       "jobs",id};
                 return Joiner.on(File.separator).join(path);
         }
         
@@ -127,7 +127,7 @@ public class Utils {
         }
         //use only when extrictly necessary
         public static void cleanUpDb() throws IOException {
-           FileUtils.deleteDirectory(new File(new File(new File(System.getProperty("pipeline.path")),"data"),"db")); 
+           FileUtils.deleteDirectory(new File(new File(PipelineLauncher.getDataPath()),"db")); 
         }
 }
 
