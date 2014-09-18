@@ -6,7 +6,7 @@ Integration tests for the [pipeline2 framework] (https://github.com/daisy/pipeli
 How to run the tests
 ====================
 
- The idea is to be able to run the integration tests in the three major targeted platforms. Currently it is only possible to run tests against a linux box (guest environment you should be able to run the regardless your host OS).  
+ The idea is to be able to run the integration tests in the three major targeted platforms. Currently it is only possible to run tests against a linux box (guest environment, you should be able to run the regardless your host OS).  
 
  1. Get [vagrant](https://www.vagrantup.com/) (The software not a random bearded guy).
  2. ``cd platform/linux``
