@@ -28,3 +28,5 @@ Thumbs.db
 tags
 
 *.pyc
+#vagrant files
+.vagrant
