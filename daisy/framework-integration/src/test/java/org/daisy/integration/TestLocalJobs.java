@@ -2,6 +2,7 @@ package org.daisy.integration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.daisy.pipeline.webservice.jabx.base.Alive;
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.job.Result;
 import org.daisy.pipeline.webservice.jabx.request.JobRequest;
+import org.daisy.pipeline.webservice.jabx.request.Priority;
 import org.daisy.pipeline.webservice.jabx.script.Scripts;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -191,6 +193,21 @@ public class TestLocalJobs {
 
         }
 
+        @Test
+        public void testZipAndFileUrlError() throws Exception {
+                Optional<JobRequest> req=Utils.getJobRequest(CLIENT,Priority.MEDIUM,"file:/hauy_valid.xml");
+                InputStream is = this.getClass().getClassLoader().getResourceAsStream("dtbook/dtbook.zip");
+                Assert.assertTrue("The request is present",req.isPresent());
+                try {
+                        Job job=CLIENT.sendJob(req.get(),is);
+                        toDelete.add(job);
+                        Assert.fail("Local uri along with a zip file should error");
+
+
+                } catch(Exception e){
+                }
+                
+        }
  
        
 }
