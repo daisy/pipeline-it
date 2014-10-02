@@ -13,7 +13,7 @@
   <properties>
     <slf4j.version>1.7.5</slf4j.version>
     <guava.version>15.0</guava.version>
-    <pipeline.version>1.8.1-SNAPSHOT</pipeline.version>
+    <pipeline.version>1.8.1</pipeline.version>
   </properties>
   <dependencies>
     <dependency>
@@ -45,7 +45,7 @@
     <dependency>
       <groupId>org.daisy.pipeline</groupId>
       <artifactId>webservice-jabx</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -76,6 +76,18 @@
     </dependency>
   </dependencies>
   <build>
+    <pluginManagement>
+         <plugins>
+             <plugin>
+                 <artifactId>maven-compiler-plugin</artifactId>
+                 <configuration>
+                     <source>1.7</source>
+                     <target>1.7</target>
+                     <compilerArgument></compilerArgument>
+                 </configuration>
+             </plugin>
+         </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -103,7 +115,7 @@
               <goal>bootstrap</goal>
             </goals>
             <configuration>
-	      <scmVersion>auth_local_via_env</scmVersion>
+              <scmVersion>release/1.8.1</scmVersion>
 	      <scmVersionType>branch</scmVersionType>
               <goals>install</goals>
               <profiles>!dev-launcher</profiles>
