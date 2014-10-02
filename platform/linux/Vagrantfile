@@ -53,5 +53,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
    end
    #good'ol bash script for provisioning
    config.vm.provision "shell",  path: "./cookbook/provision.sh"
+   config.vm.provision "file",  source: "./cookbook/settings.xml", destination: "/home/vagrant/.m2/settings.xml"
 
 end
