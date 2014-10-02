@@ -9,11 +9,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
-import org.daisy.pipeline.webservice.jabx.base.Alive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
@@ -104,12 +104,13 @@ public class PipelineLauncher {
               int times=1;
                                 while (!done) {
                                         logger.info(String.format("Waiting for the ws(%d)...",times++));
-                                        Alive alive = null;
+                                        //wait for the scripts to be registered
+                                        Optional<String>href= Optional.absent();
                                         try {
-                                                alive = client.alive();
+                                                href= Utils.getScriptHref("dtbook-to-zedai",client);
                                         } catch (Exception e) {}
 
-                                        if (alive != null) {
+                                        if (href.isPresent()) {
                                                 logger.info("Seems to be up!");
                                                 done = true;
                                         }
