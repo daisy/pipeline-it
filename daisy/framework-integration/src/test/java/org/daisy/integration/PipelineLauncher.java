@@ -134,7 +134,7 @@ public class PipelineLauncher {
 
                 try {
                         //Godel may disagree with this
-                        result = t.get(25, TimeUnit.SECONDS);
+                        result = t.get(60, TimeUnit.SECONDS);
                 } catch (Exception e) {
                         logger.error("Timed out waiting for the pipeline "+e.getMessage());
                         t.cancel(true);
