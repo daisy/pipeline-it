@@ -14,7 +14,7 @@ If docker is not available, use the boot2docker image:
     $ docker build -t daisy/nexus ~/pipeline-it/nexus
     $ docker run -d -p 8081:8081 --name nexus daisy/nexus
 
-# Using the service
+## Using the service
 
 For deploying to the repository, add the following to your `distributionManagement` section:
 

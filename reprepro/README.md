@@ -14,7 +14,7 @@ If docker is not available, use the boot2docker image:
     $ docker build -t daisy/reprepro ~/pipeline-it/reprepro
     $ docker run -d -p 80:80 --name reprepro --link nexus:nexus daisy/reprepro
 
-# Using the service
+## Using the service
 
     echo "deb     http://localhost/debian testing main contrib non-free
     deb-src http://localhost/debian testing main contrib non-free
