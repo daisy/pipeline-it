@@ -9,6 +9,7 @@ import java.util.zip.ZipInputStream;
 
 import javax.ws.rs.core.Response;
 
+import org.daisy.pipeline.client.PipelineClient;
 import org.daisy.pipeline.webservice.jabx.base.Alive;
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.job.Result;

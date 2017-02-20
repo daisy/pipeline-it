@@ -3,6 +3,7 @@ package org.daisy.integration;
 import java.io.IOException;
 import java.util.List;
 
+import org.daisy.pipeline.client.PipelineClient;
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.job.JobSizes;
 import org.daisy.pipeline.webservice.jabx.properties.Properties;

@@ -6,6 +6,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import org.daisy.pipeline.client.PipelineClient;
 import org.daisy.pipeline.webservice.jabx.base.Alive;
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.job.Result;

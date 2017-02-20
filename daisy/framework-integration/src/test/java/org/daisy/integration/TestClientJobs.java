@@ -2,6 +2,7 @@ package org.daisy.integration;
 
 import java.util.List;
 
+import org.daisy.pipeline.client.PipelineClient;
 import org.daisy.pipeline.webservice.jabx.clients.Client;
 import org.daisy.pipeline.webservice.jabx.clients.Priority;
 import org.daisy.pipeline.webservice.jabx.job.Job;

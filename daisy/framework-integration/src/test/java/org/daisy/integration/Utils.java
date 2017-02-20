@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.apache.commons.io.FileUtils;
+import org.daisy.pipeline.client.PipelineClient;
 import org.daisy.pipeline.webservice.jabx.job.Job;
 import org.daisy.pipeline.webservice.jabx.request.Input;
 import org.daisy.pipeline.webservice.jabx.request.Item;
