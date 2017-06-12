@@ -24,12 +24,12 @@
     </dependency>
     <dependency>
       <groupId>org.daisy.pipeline</groupId>
-      <artifactId>clientlib-java-jabx</artifactId>
+      <artifactId>clientlib-java-jaxb</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.daisy.pipeline</groupId>
-      <artifactId>webservice-jabx</artifactId>
+      <artifactId>webservice-jaxb</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
